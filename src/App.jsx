@@ -5,9 +5,11 @@ import Home from './components/Home';
 
 export default function App() {
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
+    <>
       <Header />
-      <Home />
-    </Container>
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Home />
+      </Container>
+    </>
   );
 }
