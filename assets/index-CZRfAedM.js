@@ -186,7 +186,7 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
       reportData {
         reports(userID: $userId, limit: $limit, page: $page) {
           total
-          hasMorePages
+          has_more_pages
           data {
             code
             title
@@ -199,11 +199,7 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
       }
     }
   `,{reports:u}=await kd(o,{userId:n,limit:r,page:i});return u}async function yw(n){const r=`
-    query GetDeathwishCasts(
-      $code: String!
-      $startTime: Float!
-      $endTime: Float!
-    ) {
+    query GetDeathwishCasts($code: String!, $startTime: Float!, $endTime: Float!) {
       reportData {
         report(code: $code) {
           events(
@@ -211,16 +207,12 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
             endTime: $endTime
             filterExpression: "ability.name = \\"Death Wish\\""
           ) {
-            data {
-              ability { id name }
-              timestamp
-              source { id name }
-            }
+            data
           }
         }
       }
     }
-  `,i={code:n,startTime:0,endTime:Number.MAX_SAFE_INTEGER},{report:o}=await kd(r,i);return o.events.data}async function vw({region:n,serverSlug:r,guildName:i,limit:o=20,page:u=1}){const c=`
+  `,i={code:n,startTime:0,endTime:Number.MAX_SAFE_INTEGER};return(await kd(r,i)).report.events.data}async function vw({region:n,serverSlug:r,guildName:i,limit:o=20,page:u=1}){const c=`
     query GetGuildReports(
       $guildName: String!
       $guildServerSlug: String!
@@ -237,7 +229,7 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
           page: $page
         ) {
           total
-          hasMorePages
+          has_more_pages
           data {
             code
             title
