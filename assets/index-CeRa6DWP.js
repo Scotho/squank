@@ -186,7 +186,7 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
       reportData {
         reports(userID: $userId, limit: $limit, page: $page) {
           total
-          hasMorePages
+          hasMorePages: has_more_pages   # alias snake_case to camelCase
           data {
             code
             title
@@ -210,7 +210,7 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
           events(
             startTime: $startTime
             endTime: $endTime
-            filterExpression: "ability.name = \\"Death Wish\\""
+            filterExpression: "ability.name = "Death Wish""
             limit: $limit
           ) {
             data               # JSON scalar array of events
@@ -224,7 +224,7 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
       reportData {
         reports(guildID: $guildID, limit: $limit, page: $page) {
           total
-          hasMorePages
+          hasMorePages: has_more_pages   # alias snake_case to camelCase
           data {
             code
             title
