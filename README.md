@@ -8,5 +8,3 @@ TODO:
 - Confirm out of combat/before combat casts are tracked
 - Verify live logs don't blow it up
 - Automatic refresh feature every X seconds
-- Automatic refresh feature every X seconds
-
