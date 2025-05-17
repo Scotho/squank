@@ -13,7 +13,7 @@ import {
 
 import {
   fetchUserReports,
-  fetchDeathwishCasters,
+  fetchCasts,
   fetchGuildReports,
 } from '../services/warcraftLogsReports';
 import { fetchPrivateUserData } from '../services/warcraftLogsUser';
@@ -27,7 +27,7 @@ export default function Home() {
   const [logUrl, setLogUrl] = useState('');
   const [logLoading, setLogLoading] = useState(false);
   const [logError, setLogError] = useState('');
-  const [dwCasts, setDwCasts] = useState([]);
+  const [keyCasts, setKeyCasts] = useState([]);
 
   // Guild Reports (SQUAWK)
   const [guildReports, setGuildReports] = useState([]);
@@ -82,14 +82,14 @@ export default function Home() {
 
     setLogError('');
     setLogLoading(true);
-    setDwCasts([]);
+    setKeyCasts([]);
 
     try {
-      const events = await fetchDeathwishCasters(id);
-      setDwCasts(events);
+      const events = await fetchCasts(id);
+      setKeyCasts(events);
     } catch (err) {
       console.error(err);
-      setLogError(err.message || 'Failed to fetch Death Wish events');
+      setLogError(err.message || 'Failed to fetch cast events');
     } finally {
       setLogLoading(false);
     }
@@ -125,8 +125,10 @@ export default function Home() {
 
   return (
     <Box textAlign="center" mt={5} px={2}>
-      <Typography variant="h4" gutterBottom>Sup Crankers</Typography>
-      <Typography variant="p" gutterBottom>This uses the WCL v2 API <b>which requires you to be logged in</b>, but there doesn't seem to be an API limits.</Typography>
+      <Typography variant="h4" gutterBottom>WCL BWL Restriction Calculator</Typography>
+      <Typography variant="body1" gutterBottom>
+        This uses the WCL v2 API <b>which requires you to be logged in</b>, but there doesn't seem to be an API limit.
+      </Typography>
 
       {/* Evaluate Log */}
       <Box mt={5} textAlign="left">
@@ -139,7 +141,7 @@ export default function Home() {
           <TextField
             fullWidth
             label="Warcraft Logs Report URL"
-            placeholder="https://www.warcraftlogs.com/reports/aYcVPHdNt8qFjKCw?…"
+            placeholder="https://www.warcraftlogs.com/reports/aYcVPHdNt8qFjKCw"
             value={logUrl}
             onChange={e => setLogUrl(e.target.value)}
             error={!!logError}
@@ -150,11 +152,15 @@ export default function Home() {
           </Button>
         </Box>
         <List>
-          {dwCasts.map((ev, i) => (
+          {keyCasts.map((ev,i) => (
             <ListItem key={i} divider>
               <ListItemText
-                primary={`${ev.source.name} cast Death Wish`}
-                secondary={new Date(ev.timestamp).toLocaleString()}
+                primary={`${ev.sourceName} cast ${
+                  ev.abilityGameID === 12328 ? 'Death Wish'
+                  : ev.abilityGameID === 1719  ? 'Recklessness'
+                  :                              'Diamond Flask'
+                } on ${ev.encounterName}`}
+                secondary={new Date(ev.absoluteTimestamp).toLocaleString()}
               />
             </ListItem>
           ))}
@@ -163,6 +169,11 @@ export default function Home() {
 
       {/* Guild Reports (SQUAWK) */}
       <Box mt={5} mb={3}>
+        <Typography variant="body2" gutterBottom>
+          Results will be clickable in the future. Making sure Evaluate Log works first
+        </Typography>
+        <br/>
+        <br/>
         <Button
           variant="contained"
           onClick={handleLoadGuildReports}
@@ -184,7 +195,7 @@ export default function Home() {
         ))}
       </List>
 
-       {/* My Reports */}
+      {/* My Reports */}
       <Box mb={3}>
         <Button
           variant="contained"
