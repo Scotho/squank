@@ -1,0 +1,29 @@
+client ID
+9eee031e-041c-4e7e-b590-5603ae76d717
+
+client secret: 
+CANT HAVE FOR PKCE
+
+https://scotho.github.io/squank/
+
+
+steps for insomnia
+-----------------
+AUTH TOKEN
+
+POST
+
+HEADERS 
+    AUTHORIZATION | Basic OWVlZGU2MDEtOTg1Ny00NjJjLThiNDMtYTBhYWMzYWYzZWE3OnlXaEVXcGRZY2ZRSWd3QU5QNHFoeGgxUlZUcDgzOE5SNW1PQ1AxRDQ=
+    Content-Type | application/x-www-form-urlencoded
+BODY
+    Form URL Encoded
+    grant_type	| client_credentials
+-------------
+
+
+
+
+
+access token
+eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5ZWVkZTYwMS05ODU3LTQ2MmMtOGI0My1hMGFhYzNhZjNlYTciLCJqdGkiOiIwNTg3MjdiMmQ5MTg3NzkwOGQ2YzU3MWMwZTQ4MzVhMWY2Njg4ODUyNmZmZjgzYmM1OWYwNjZlMmMwOTlkN2NiZDQ5YTIzY2E2ZTQ2ODAyYyIsImlhdCI6MTc0NzQ0NjM4OC4yMjk3MjcsIm5iZiI6MTc0NzQ0NjM4OC4yMjk3MywiZXhwIjoxNzc4NTUwMzg4LjIxODgxMiwic3ViIjoiIiwic2NvcGVzIjpbInZpZXctdXNlci1wcm9maWxlIiwidmlldy1wcml2YXRlLXJlcG9ydHMiXX0.Zfn0RY9pNFTOi-Ldc0eJqkLWNEJm1ik1Xqm5dW8KhIwPZbtylGrmKNCBFz6vvm5Z9z_51s5O_gPRvSYcT_stcnFjtZb75dsoGFPslSg9GTH64CzsmEGFARmQxuO9WoztZXVDErnrxMT6oEbMdSATAsOaw1F9oYMezgqgsHDQV3ECHT8bTF6Epq1aZZ2sJU32LYMZuolGfotHxoGAZficflIdinJw4o2M87LFitqh8kd71BzyVASdqjeHsclMZIgY2mFmasvZo_XaI6npvjMIDjbKf2TajZlJJm-qI1z70Bagomr3SNvLNYzoP5Rd6iEyZpSoc87zy8aityPMhTES5C_wkhoWq6hgchWzIM9LsRuDQkJLGMYFGC8nih1x2e1HU96Qyb3D3c02QNqBfO75ovC1-UG76SoHrNDNsPkqdWhVDMg_ChmDplLN35J2WXibVBqRMOQy7v8VRiyLRTEHpfIlIS_MHLHcixeuojp_1-DeTF4I-BNoMA9N85xVLQ66ey-QU734WK-kemlI-MQM_jBqTPerPM65NZcsuRYJX47c6HFeEyTitWMH9QO4tATp039DTMTYS6eYmFNf04tD_EHI2GRHg-W0mKUtds6rBCijPuLT3I3SX5LORygB0YtUFc8r-wfx6XvNnBDn__BF2wAdsX7y87tOiJSOpNLrzvg

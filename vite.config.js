@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  base: '/squank/',  
   plugins: [react()],
   server: {
     host: true,     // bind to both localhost and your LAN IP
