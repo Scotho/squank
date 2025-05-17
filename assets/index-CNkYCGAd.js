@@ -186,7 +186,7 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
       reportData {
         reports(userID: $userId, limit: $limit, page: $page) {
           total
-          has_more_pages
+          hasMorePages
           data {
             code
             title
@@ -213,22 +213,18 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
             filterExpression: "ability.name = \\"Death Wish\\""
             limit: $limit
           ) {
-            data {
-              ability { id name }
-              timestamp
-              source { id name }
-            }
-            nextPageTimestamp
+            data               # JSON scalar array of events
+            nextPageTimestamp  # for pagination if you need more than $limit
           }
         }
       }
     }
-  `,i={code:n,startTime:0,endTime:Number.MAX_SAFE_INTEGER,limit:1e4},{report:o}=await kd(r,i).then(u=>({report:u.report}));return o.events.data}async function vw({guildID:n,limit:r=20,page:i=1}){const o=`
+  `,i={code:n,startTime:0,endTime:Number.MAX_SAFE_INTEGER,limit:1e4},{report:o}=await kd(r,i);return o.events.data}async function vw({guildID:n,limit:r=20,page:i=1}){const o=`
     query GetGuildReports($guildID: Int!, $limit: Int!, $page: Int!) {
       reportData {
         reports(guildID: $guildID, limit: $limit, page: $page) {
           total
-          has_more_pages
+          hasMorePages
           data {
             code
             title
