@@ -47,38 +47,50 @@ export async function fetchUserReports(userId, { limit = 20, page = 1 } = {}) {
   return reports;
 }
 
+// src/services/warcraftLogsReports.js
+// src/services/warcraftLogsReports.js
+
 /**
- * Fetch all players who cast "Death Wish" in a single report.
- * Steps:
- *  1. Retrieve all fight IDs in the report.
- *  2. Fetch structured eventsData for those fights, filtered to cast events of Death Wish.
- *  3. Extract and return the unique caster names.
+ * Fetch all cast events for Death Wish, Recklessness, and Diamond Flask,
+ * annotated with absoluteTimestamp, abilityGameID, sourceName, and encounterName.
  */
-export async function fetchDeathwishCasters(reportCode) {
-  console.log(`[fetchDeathwishCasters] Fetching fight IDs for report: ${reportCode}`);
-  const fightsQuery = `
-    query GetReportFights($code: String!) {
+export async function fetchCasts(reportCode) {
+  // 1) Get fight IDs + encounter names + report startTime
+  const metaQ = `
+    query GetReportMeta($code: String!) {
       reportData {
         report(code: $code) {
-          fights { id }
+          startTime
+          fights {
+            id
+            name        # encounter (boss) name
+          }
         }
       }
     }
   `;
-  const { report: fightsData } = await executeQuery(fightsQuery, { code: reportCode });
-  const fightIDs = fightsData.fights.map(f => f.id);
-  console.log(`[fetchDeathwishCasters] Found fights:`, fightIDs);
-  if (!fightIDs.length) return [];
+  const metaResp = await executeQuery(metaQ, { code: reportCode });
+  const report = metaResp.report;
+  const startTime = report?.startTime;
+  const fights = report?.fights || [];
 
-  console.log('[fetchDeathwishCasters] Fetching Death Wish events via abilityID filter');
-  // Use the built‑in abilityID arg rather than filterExpression
-  const eventsQuery = `
-    query GetDeathwishEvents($code: String!, $fightIDs: [Int]!) {
+  if (!startTime || !fights.length) return [];
+
+  // build fightId → encounterName map
+  const fightIdToName = Object.fromEntries(
+    fights.map(f => [f.id, f.name || "Unknown encounter"])
+  );
+
+  const fightIDs = fights.map(f => f.id);
+
+  // 2) Fetch only the three abilities server‑side
+  const eventsQ = `
+    query GetKeyCastEvents($code: String!, $fightIDs: [Int]!) {
       reportData {
         report(code: $code) {
           events(
             fightIDs: $fightIDs
-            abilityID: 12328     # Death Wish
+            filterExpression: "type = \\"cast\\" and (ability.id = 12328 or ability.id = 1719 or ability.id = 363880)"
             limit: 10000
           ) {
             data
@@ -87,26 +99,49 @@ export async function fetchDeathwishCasters(reportCode) {
       }
     }
   `;
-  const { report } = await executeQuery(eventsQuery, { code: reportCode, fightIDs });
-  const raw = report.events.data;
+  const eventsResp = await executeQuery(eventsQ, { code: reportCode, fightIDs });
+  let rows = eventsResp.report?.events?.data;
+  if (!rows) return [];
 
-  // `data` may come back as a JSON string or already‐parsed array:
-  let rows = Array.isArray(raw) ? raw : JSON.parse(raw);
+  // 3) Parse JSON if needed
+  if (typeof rows === "string") {
+    try { rows = JSON.parse(rows); }
+    catch {
+      console.error("[fetchKeyCastEvents] Failed to parse events JSON");
+      return [];
+    }
+  }
 
-  console.log('[fetchDeathwishCasters] Total rows:', rows.length);
+  // 4) Fetch actor names
+  const actorsQ = `
+    query GetActors($code: String!) {
+      reportData {
+        report(code: $code) {
+          masterData {
+            actors { id name }
+          }
+        }
+      }
+    }
+  `;
+  const actorsResp = await executeQuery(actorsQ, { code: reportCode });
+  const actors = actorsResp.report?.masterData?.actors || [];
+  const idToName = {};
+  for (const a of actors) {
+    if (typeof a.id === "number" && typeof a.name === "string") {
+      idToName[a.id] = a.name;
+    }
+  }
 
-  // In the legacy CSV rows, column 3 is sourceName
-  const casters = Array.from(new Set(
-    rows
-      // Optional: verify it's a cast event, too (column 1 is the event type)
-      .filter(r => r[1] === 'cast')
-      .map(r => r[3])
-      .filter(Boolean)
-  ));
-
-  console.log('[fetchDeathwishCasters] Unique casters:', casters);
-  return casters;
+  // 5) Map each event to include absoluteTime + encounterName
+  return rows.map(ev => ({
+    absoluteTimestamp: startTime + ev.timestamp,
+    sourceName:       idToName[ev.sourceID]        || "Unknown",
+    abilityGameID:    ev.abilityGameID,
+    encounterName:    fightIdToName[ev.fight]      || "Unknown encounter",
+  }));
 }
+
 
 
 
