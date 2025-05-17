@@ -198,19 +198,29 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
         }
       }
     }
-  `,{reports:u}=await Bs(o,{userId:n,limit:r,page:i});return u}async function yw(n){const r="…",{report:i}=await Bs(r,{code:n}),o=i.fights.map(h=>h.id);if(!o.length)return[];const u=`
-    query ($code: String!, $fightIDs: [Int]!) {
+  `,{reports:u}=await Bs(o,{userId:n,limit:r,page:i});return u}async function yw(n){console.log("[fetchDeathwishCasters] Fetching fight IDs for report:",n);const r=`
+    query GetReportFights($code: String!) {
+      reportData {
+        report(code: $code) {
+          fights { id }
+        }
+      }
+    }
+  `,{report:i}=await Bs(r,{code:n}),o=i.fights.map(h=>h.id);if(console.log("[fetchDeathwishCasters] Found fights:",o),o.length===0)return console.log("[fetchDeathwishCasters] No fights found, returning empty list."),[];console.log("[fetchDeathwishCasters] Fetching events via abilityID filter");const u=`
+    query GetDeathwishEvents($code: String!, $fightIDs: [Int]!) {
       reportData {
         report(code: $code) {
           events(
             fightIDs: $fightIDs
             abilityID: 12328
             limit: 10000
-          ) { data }
+          ) {
+            data
+          }
         }
       }
     }
-  `,{report:c}=await Bs(u,{code:n,fightIDs:o}),d=c.events.data;let p=Array.isArray(d)?d:[];p.length&&typeof p[0]=="string"&&(p=p.map(h=>h.split(","))),console.log("[fetchDeathwishCasters] Parsed rows count:",p.length);const m=Array.from(new Set(p.filter(h=>h[1]==="cast").map(h=>h[3]).filter(Boolean)));return console.log("[fetchDeathwishCasters] Unique casters:",m),m}async function vw({guildID:n,limit:r=20,page:i=1}){const o=`
+  `,{report:c}=await Bs(u,{code:n,fightIDs:o}),d=c.events.data;console.log("[fetchDeathwishCasters] Raw data type:",typeof d,"length:",(Array.isArray(d),d.length));let p=Array.isArray(d)?d:[];p.length>0&&typeof p[0]=="string"&&(p=p.map(h=>h.split(","))),console.log("[fetchDeathwishCasters] Parsed rows count:",p.length);const m=Array.from(new Set(p.filter(h=>h[1]==="cast").map(h=>h[3]).filter(h=>!!h)));return console.log("[fetchDeathwishCasters] Unique casters:",m),m}async function vw({guildID:n,limit:r=20,page:i=1}){const o=`
     query GetGuildReports($guildID: Int!, $limit: Int!, $page: Int!) {
       reportData {
         reports(guildID: $guildID, limit: $limit, page: $page) {
