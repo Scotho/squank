@@ -199,20 +199,31 @@ export default theme;`}function Gf(n={},...r){const{breakpoints:i,mixins:o={},sp
       }
     }
   `,{reports:u}=await kd(o,{userId:n,limit:r,page:i});return u}async function yw(n){const r=`
-    query GetDeathwishCasts($code: String!, $startTime: Float!, $endTime: Float!) {
+    query GetDeathwishCasts(
+      $code: String!
+      $startTime: Float!
+      $endTime: Float!
+      $limit: Int!
+    ) {
       reportData {
         report(code: $code) {
           events(
             startTime: $startTime
             endTime: $endTime
             filterExpression: "ability.name = \\"Death Wish\\""
+            limit: $limit
           ) {
-            data
+            data {
+              ability { id name }
+              timestamp
+              source { id name }
+            }
+            nextPageTimestamp
           }
         }
       }
     }
-  `,i={code:n,startTime:0,endTime:Number.MAX_SAFE_INTEGER};return(await kd(r,i)).report.events.data}async function vw({guildID:n,limit:r=20,page:i=1}){const o=`
+  `,i={code:n,startTime:0,endTime:Number.MAX_SAFE_INTEGER,limit:1e4},{report:o}=await kd(r,i).then(u=>({report:u.report}));return o.events.data}async function vw({guildID:n,limit:r=20,page:i=1}){const o=`
     query GetGuildReports($guildID: Int!, $limit: Int!, $page: Int!) {
       reportData {
         reports(guildID: $guildID, limit: $limit, page: $page) {
