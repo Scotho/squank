@@ -240,7 +240,7 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
         }
       }
     }
-  `,{code:n,fightIDs:d,filter:"ability.id = 12328 or ability.id = 1719 or ability.id = 363880"})).report.events.data;if(typeof w=="string")try{w=JSON.parse(w)}catch{w=[]}return[...w.map(R=>({absoluteTimestamp:o+R.timestamp,sourceName:h[R.sourceID]||"Unknown",abilityGameID:R.abilityGameID,encounterName:c[R.fight]||"Unknown encounter"})),...A].sort((R,z)=>R.absoluteTimestamp-z.absoluteTimestamp)}async function vw({guildID:n,limit:r=20,page:i=1}){const o=`
+  `,{code:n,fightIDs:d,filter:"ability.id = 12328 or ability.id = 1719 or ability.id = 363880"})).report.events.data;if(typeof w=="string")try{w=JSON.parse(w)}catch{w=[]}return[...w.map(R=>({absoluteTimestamp:o+R.timestamp,sourceName:h[R.sourceID]||"Unknown",abilityGameID:R.abilityGameID,encounterName:c[R.fight]+" (pre-pull)"||"Unknown encounter (pre-pull)"})),...A].sort((R,z)=>R.absoluteTimestamp-z.absoluteTimestamp)}async function vw({guildID:n,limit:r=20,page:i=1}){const o=`
     query GetGuildReports($guildID: Int!, $limit: Int!, $page: Int!) {
       reportData {
         reports(guildID: $guildID, limit: $limit, page: $page) {
