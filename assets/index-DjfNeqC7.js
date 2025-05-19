@@ -205,8 +205,8 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
           startTime
           fights {
             id
-            name        # encounter (boss) name
-            startTime   # absolute epoch ms when the pull began
+            name
+            startTime
           }
         }
       }
@@ -217,7 +217,7 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
         report(code: $code) {
           events(
             fightIDs: $fightIDs,
-            filterExpression: "type = "cast" and (ability.id = 12328 or ability.id = 1719 or ability.id = 363880)",
+            filterExpression: """type = "cast" and (ability.id = 12328 or ability.id = 1719 or ability.id = 363880)""",
             limit: 10000
           ) {
             data
@@ -225,13 +225,11 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
         }
       }
     }
-  `,h=c.map(j=>j.id);let x=(M=(z=(await pl(m,{code:n,fightIDs:h})).report)==null?void 0:z.events)==null?void 0:M.data;if(typeof x=="string")try{x=JSON.parse(x)}catch{console.error("[fetchCasts] Failed to parse in-fight events JSON"),x=[]}const A=await pl(`
+  `,h=c.map(j=>j.id);let x=(M=(z=(await pl(m,{code:n,fightIDs:h})).report)==null?void 0:z.events)==null?void 0:M.data;if(typeof x=="string")try{x=JSON.parse(x)}catch{x=[]}const A=await pl(`
     query GetActors($code: String!) {
       reportData {
         report(code: $code) {
-          masterData {
-            actors { id name }
-          }
+          masterData { actors { id name } }
         }
       }
     }
@@ -241,15 +239,10 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
         report(code: $code) {
           buffData(buffs: [
             { type: buff, abilityID: 12328 },
-            { type: buff, abilityID: 1719  },
+            { type: buff, abilityID: 1719 },
             { type: buff, abilityID: 363880 }
           ]) {
-            segments {
-              ability { id }
-              startTime   # ms after report start
-              endTime
-              actor { id }
-            }
+            segments { ability { id } startTime endTime actor { id } }
           }
         }
       }
@@ -260,14 +253,7 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
         reports(guildID: $guildID, limit: $limit, page: $page) {
           total
           has_more_pages
-          data {
-            code
-            title
-            startTime
-            endTime
-            visibility
-            zone { name }
-          }
+          data { code title startTime endTime visibility zone { name } }
         }
       }
     }
