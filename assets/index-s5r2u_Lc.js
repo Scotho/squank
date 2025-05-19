@@ -212,8 +212,8 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
       reportData {
         report(code: $code) {
           events(
-            fightIDs: $fightIDs
-            filterExpression: "type = "cast" and (ability.id = 12328 or ability.id = 1719 or ability.id = 363880)"
+            fightIDs: $fightIDs,
+            filterExpression: "type = "cast" and (ability.id = 12328 or ability.id = 1719 or ability.id = 363880)",
             limit: 10000
           ) { data }
         }
@@ -233,7 +233,7 @@ export default theme;`}function Yf(n={},...r){const{breakpoints:i,mixins:o={},sp
         report(code: $code) {
           buffData(buffs: [
             { type: buff, abilityID: 12328 },
-            { type: buff, abilityID: 1719  },
+            { type: buff, abilityID: 1719 },
             { type: buff, abilityID: 363880 }
           ]) { segments { ability { id } startTime actor { id } } }
         }
